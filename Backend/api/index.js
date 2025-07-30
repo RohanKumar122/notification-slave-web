@@ -5,11 +5,22 @@ const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
 const app = express();
-app.options('*', cors({
-  origin: "https://notification-slave-frontend-web.vercel.app",
+
+// ✅ Allow your deployed frontend
+const allowedOrigin = "https://notification-slave-frontend-web.vercel.app";
+app.use(cors({
+  origin: allowedOrigin,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+// ✅ Handle preflight (important for Vercel)
+app.options('*', cors({
+  origin: allowedOrigin,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 
 app.use(bodyParser.json());
 
