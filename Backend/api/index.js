@@ -1,26 +1,22 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors');
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
 const app = express();
 
-// ✅ Allow your deployed frontend
 const allowedOrigin = "https://notification-slave-frontend-web.vercel.app";
-app.use(cors({
-  origin: allowedOrigin,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
 
-// ✅ Handle preflight (important for Vercel)
-app.options('*', cors({
-  origin: allowedOrigin,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
-
+// ✅ Middleware for CORS
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", allowedOrigin);
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.status(200).end(); // ✅ Handle preflight instantly
+  }
+  next();
+});
 
 app.use(bodyParser.json());
 
@@ -34,7 +30,7 @@ async function connectDB() {
   if (!client) {
     client = new MongoClient(process.env.MONGO_URI);
     await client.connect();
-    const db = client.db("notificationApp"); // you can rename db if needed
+    const db = client.db("notificationApp");
     tokensCollection = db.collection("tokens");
     console.log("✅ MongoDB Connected");
   }
@@ -73,7 +69,7 @@ app.post('/save-token', async (req, res) => {
   }
 });
 
-// ✅ Local run only
+// ✅ Local dev only
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 4000;
   app.listen(PORT, () => {
