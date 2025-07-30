@@ -2,13 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { MongoClient } = require('mongodb');
-const path = require('path');
-const serverless = require('serverless-http');
-
-// ✅ Load env from root
-// require('dotenv').config({ path: path.resolve(__dirname, "../.env") });
-// require("dotenv").config({ path: "../.env", override: true });
-
 require('dotenv').config();
 
 const app = express();
@@ -25,13 +18,13 @@ async function connectDB() {
   if (!client) {
     client = new MongoClient(process.env.MONGO_URI);
     await client.connect();
-    const db = client.db("notificationApp"); // you can change db name if needed
+    const db = client.db("notificationApp"); // you can rename db if needed
     tokensCollection = db.collection("tokens");
     console.log("✅ MongoDB Connected");
   }
 }
 
-// Test route
+// ✅ Test route
 app.get('/', async (req, res) => {
   try {
     await connectDB();
@@ -42,7 +35,7 @@ app.get('/', async (req, res) => {
   }
 });
 
-// Save FCM token
+// ✅ Save FCM token
 app.post('/save-token', async (req, res) => {
   try {
     await connectDB();
@@ -64,6 +57,7 @@ app.post('/save-token', async (req, res) => {
   }
 });
 
+// ✅ Local run only
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 4000;
   app.listen(PORT, () => {
@@ -71,7 +65,5 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-// module.exports = app;
-// module.exports.handler = serverless(app);
-
+// ✅ Export for Vercel
 module.exports = app;
