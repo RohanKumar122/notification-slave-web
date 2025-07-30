@@ -5,7 +5,7 @@ const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: "*" }));
 app.use(bodyParser.json());
 
 let client;

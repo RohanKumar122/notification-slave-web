@@ -1,9 +1,16 @@
-// src/firebase-messaging-sw.js
+// public/firebase-messaging-sw.js
 importScripts("https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js");
 importScripts("https://www.gstatic.com/firebasejs/9.6.11/firebase-messaging-compat.js");
-import firebaseConfig from "../public/firebase-config"; // ✅ now you can use env
 
-firebase.initializeApp(firebaseConfig);
+// ⚡ Hardcode env values (since Vercel does not inject env vars into public/)
+firebase.initializeApp({
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID",
+});
 
 const messaging = firebase.messaging();
 
