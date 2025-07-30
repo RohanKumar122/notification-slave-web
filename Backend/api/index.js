@@ -7,7 +7,9 @@ const serverless = require('serverless-http');
 
 // ✅ Load env from root
 // require('dotenv').config({ path: path.resolve(__dirname, "../.env") });
-require("dotenv").config({ path: "../.env", override: true });
+// require("dotenv").config({ path: "../.env", override: true });
+
+require('dotenv').config();
 
 const app = express();
 app.use(cors());
