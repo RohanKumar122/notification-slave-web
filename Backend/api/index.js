@@ -5,15 +5,21 @@ require('dotenv').config();
 
 const app = express();
 
-const allowedOrigin = "https://notification-slave-frontend-web.vercel.app";
+const allowedOrigins = [
+  "https://notification-slave-frontend-web.vercel.app",
+  "http://localhost:3000",
+  "http://localhost:3001"
+];
 
-// ✅ Middleware for CORS
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", allowedOrigin);
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   if (req.method === "OPTIONS") {
-    return res.status(200).end(); // ✅ Handle preflight instantly
+    return res.status(200).end(); // ✅ handle preflight immediately
   }
   next();
 });
