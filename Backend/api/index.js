@@ -5,7 +5,11 @@ const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
 const app = express();
-app.use(cors({ origin: "*" }));
+app.use(cors({
+  origin: "https://notification-slave-frontend-web.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(bodyParser.json());
 
 let client;
