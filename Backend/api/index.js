@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const { MongoClient } = require('mongodb');
 const path = require('path');
+const serverless = require('serverless-http');
 
 // ✅ Load env from root
 require('dotenv').config({ path: path.resolve(__dirname, "../.env") });
@@ -68,3 +69,4 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 module.exports = app;
+module.exports.handler = serverless(app);
