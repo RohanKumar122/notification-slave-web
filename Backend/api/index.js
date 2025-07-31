@@ -1,11 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { MongoClient } = require('mongodb');
-require('dotenv').config();
+require("dotenv").config({ path: "../.env", override: true });
 
 const app = express();
 
-const allowedOrigins = [
+const allowedOrigins = ["*",
   "https://notification-slave-frontend-web.vercel.app",
   "http://localhost:3000",
   "http://localhost:3001"
