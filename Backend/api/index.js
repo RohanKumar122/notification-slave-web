@@ -60,6 +60,7 @@ app.post('/save-token', async (req, res) => {
   try {
     await connectDB();
     const { name, token } = req.body;
+    console.log("Received token:", token, "for name:", name);
     if (!token || !name) {
       return res.status(400).json({ error: "Name and token required" });
     }
