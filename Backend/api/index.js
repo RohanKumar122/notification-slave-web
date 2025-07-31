@@ -6,30 +6,30 @@ require("dotenv").config({ path: "../.env", override: true });
 
 const app = express();
 
-// const allowedOrigins = [
-//   "https://notification-slave-frontend-web.vercel.app",
-//   "http://localhost:3000",
-//   "http://localhost:3001"
-// ];
+const allowedOrigins = [
+  "https://notification-slave-frontend-web.vercel.app",
+  "http://localhost:3000",
+  "http://localhost:3001"
+];
 
-// // ✅ CORS config
-// app.use(cors({
-//   origin: function (origin, callback) {
-//     // Allow requests with no origin (like curl/postman) or if in list
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error("CORS not allowed for this origin: " + origin));
-//     }
-//   },
-//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//   allowedHeaders: ["Content-Type", "Authorization"],
-//   credentials: true, // 🔑 if you ever use cookies or Authorization headers
-// }));
+// ✅ CORS config
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like curl/postman) or if in list
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed for this origin: " + origin));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true, // 🔑 if you ever use cookies or Authorization headers
+}));
 
-// // ✅ Handle preflight explicitly (for Vercel serverless)
-// app.options('*', cors());
-app.use(cors({ origin: "*" }));
+// ✅ Handle preflight explicitly (for Vercel serverless)
+app.options('*', cors());
+
 app.use(bodyParser.json());
 let client;
 let tokensCollection;
