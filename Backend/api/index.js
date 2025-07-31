@@ -12,25 +12,27 @@ const allowedOrigins = [
   "http://localhost:3001"
 ];
 
-// ✅ CORS config
-app.use(cors({
+const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like curl/postman) or if in list
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error("CORS not allowed for this origin: " + origin));
+      callback(new Error("CORS not allowed for origin: " + origin));
     }
   },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true, // 🔑 if you ever use cookies or Authorization headers
-}));
+  credentials: true
+};
 
-// ✅ Handle preflight explicitly (for Vercel serverless)
-app.options('*', cors());
+// ✅ Apply cors everywhere
+app.use(cors(corsOptions));
+
+// ✅ Explicitly handle preflight with SAME options
+app.options('*', cors(corsOptions));
 
 app.use(bodyParser.json());
+
 let client;
 let tokensCollection;
 
