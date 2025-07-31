@@ -1,29 +1,39 @@
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const { MongoClient } = require('mongodb');
 require("dotenv").config({ path: "../.env", override: true });
 
 const app = express();
 
-const allowedOrigins = ["*",
+const allowedOrigins = [
   "https://notification-slave-frontend-web.vercel.app",
   "http://localhost:3000",
   "http://localhost:3001"
 ];
 
-// ✅ Middleware for CORS
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  if (!origin || allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin || "*");
+  
+  // Always send header if origin matches
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
   }
+
+  res.header("Vary", "Origin"); // 🔑 Prevents caching wrong CORS headers
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   if (req.method === "OPTIONS") {
-    return res.status(200).end();
+    return res.sendStatus(200);
   }
-  
+
   next();
 });
 
