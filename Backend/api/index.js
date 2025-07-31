@@ -12,30 +12,23 @@ const allowedOrigins = [
   "http://localhost:3001"
 ];
 
+// ✅ CORS config
 app.use(cors({
-  origin: allowedOrigins,
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like curl/postman) or if in list
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed for this origin: " + origin));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true, // 🔑 if you ever use cookies or Authorization headers
 }));
 
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  
-  // Always send header if origin matches
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
-
-  res.header("Vary", "Origin"); // 🔑 Prevents caching wrong CORS headers
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-
-  next();
-});
+// ✅ Handle preflight explicitly (for Vercel serverless)
+app.options('*', cors());
 
 app.use(bodyParser.json());
 let client;
@@ -70,7 +63,8 @@ app.post('/save-token', async (req, res) => {
   try {
     await connectDB();
     const { name, token } = req.body;
-    console.log("Received token:", token, "for name:", name);
+    console.log("📩 Received token:", token, "for name:", name);
+
     if (!token || !name) {
       return res.status(400).json({ error: "Name and token required" });
     }
