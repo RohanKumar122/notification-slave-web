@@ -7,6 +7,7 @@ require("dotenv").config({ path: "../.env", override: true });
 const app = express();
 
 const allowedOrigins = [
+  "https://notification-slave-frontend-8oc8i3a22.vercel.app/",
   "https://notification-slave-frontend-web.vercel.app",
   "http://localhost:3000",
   "http://localhost:3001"
